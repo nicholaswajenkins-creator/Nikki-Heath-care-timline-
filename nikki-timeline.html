@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Nick & Nikki — UK Arrival, Marriage & Maternity Timeline</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    min-height: 100vh;
+    background: #0d0d0d;
+    font-family: Georgia, 'Times New Roman', serif;
+    color: #e8e8e8;
+    padding: 40px 20px 60px;
+  }
+
+  .header {
+    max-width: 680px;
+    margin: 0 auto 48px;
+    text-align: center;
+  }
+
+  .header .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: #666;
+    margin-bottom: 12px;
+  }
+
+  .header h1 {
+    font-size: clamp(26px, 5vw, 40px);
+    font-weight: 400;
+    line-height: 1.15;
+    color: #f0f0f0;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+
+  .header .subtitle {
+    color: #888;
+    font-size: 15px;
+    font-style: italic;
+    margin-top: 10px;
+  }
+
+  .legend {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 22px;
+    flex-wrap: wrap;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #aaa;
+    letter-spacing: 0.05em;
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .timeline {
+    max-width: 680px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 28px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, #333 5%, #333 95%, transparent);
+  }
+
+  .event {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 8px;
+    position: relative;
+  }
+
+  .node-col {
+    flex-shrink: 0;
+    width: 56px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 10px;
+  }
+
+  .node {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    position: relative;
+    z-index: 1;
+    border: 2px solid #ccc;
+    flex-shrink: 0;
+    transition: box-shadow 0.2s;
+  }
+
+  .node.highlight {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
+    margin-left: -4px;
+    margin-top: -4px;
+  }
+
+  .card {
+    flex: 1;
+    background: #141414;
+    border: 1px solid #222;
+    border-left-width: 3px;
+    border-radius: 8px;
+    padding: 14px 18px;
+    cursor: pointer;
+    margin-bottom: 4px;
+    transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
+    user-select: none;
+  }
+
+  .card:hover {
+    background: #1a1a1a;
+  }
+
+  .card.open {
+    background: #1c1c1c;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .card-header-left { flex: 1; }
+
+  .date-line {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .badge-urgent {
+    margin-left: 8px;
+    background: #ff4444;
+    color: #fff;
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    letter-spacing: 0.1em;
+    vertical-align: middle;
+  }
+
+  .card-title {
+    font-size: 16px;
+    color: #e8e8e8;
+    margin-bottom: 2px;
+  }
+
+  .card-title.highlight-text {
+    font-weight: 600;
+  }
+
+  .card-sub {
+    font-size: 13px;
+    color: #888;
+    font-style: italic;
+  }
+
+  .chevron {
+    color: #555;
+    font-size: 14px;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+
+  .card-detail {
+    display: none;
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #2a2a2a;
+    font-size: 14px;
+    color: #bbb;
+    line-height: 1.75;
+  }
+
+  .card.open .card-detail { display: block; }
+  .card.open .chevron-down { display: none; }
+  .card.open .chevron-up { display: inline; }
+  .chevron-up { display: none; }
+
+  .cost-box {
+    max-width: 680px;
+    margin: 40px auto 0;
+    background: #141414;
+    border: 1px solid #2a2a2a;
+    border-radius: 10px;
+    padding: 24px 28px;
+  }
+
+  .cost-box .cost-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #666;
+    margin-bottom: 16px;
+  }
+
+  .cost-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #1e1e1e;
+    font-size: 14px;
+  }
+
+  .cost-row:last-child { border-bottom: none; }
+  .cost-label { color: #aaa; }
+  .cost-val { font-family: monospace; font-size: 15px; font-weight: 600; }
+
+  .footer-note {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 12px;
+    color: #555;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="eyebrow">Prepared for Nick &amp; Nikki</div>
+  <h1>UK Arrival, Marriage &amp;<br>Maternity Timeline</h1>
+  <p class="subtitle">June 2026 — November 2026</p>
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#4f8ef7"></div> Visa</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#c97ef5"></div> Marriage</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#4caf7d"></div> Health</div>
+  </div>
+</div>
+
+<div class="timeline" id="timeline"></div>
+
+<div class="cost-box">
+  <div class="cost-eyebrow">Cost Summary</div>
+  <div class="cost-row"><span class="cost-label">IHS — spouse visa (2.5 years)</span><span class="cost-val" style="color:#4f8ef7">£2,587</span></div>
+  <div class="cost-row"><span class="cost-label">Super Priority FLR(M) service (optional)</span><span class="cost-val" style="color:#4f8ef7">£1,000</span></div>
+  <div class="cost-row"><span class="cost-label">All NHS maternity care after IHS paid</span><span class="cost-val" style="color:#4caf7d">FREE</span></div>
+  <div class="cost-row"><span class="cost-label">Potential bill if still on fiancé visa at birth</span><span class="cost-val" style="color:#ff6b6b">£10,000–20,000+</span></div>
+</div>
+
+<p class="footer-note">Click any event to expand · Dates assume fiancé visa granted ~30 May 2026</p>
+
+<script>
+const events = [
+  {
+    date: "~30 May 2026",
+    label: "Fiancé Visa Granted",
+    sub: "Decision expected",
+    cat: "visa",
+    icon: "✈️",
+    urgent: false,
+    highlight: false,
+    detail: "Nick gives notice at the local register office immediately upon visa confirmation. Nikki cannot give notice until she is physically present in the UK, but Nick getting his notice in now saves time on arrival."
+  },
+  {
+    date: "Now → 30 May",
+    label: "Nick Gives Notice",
+    sub: "Register office — get ahead of the 28-day clock",
+    cat: "marriage",
+    icon: "📋",
+    urgent: true,
+    highlight: false,
+    detail: "Nick can give notice before Nikki arrives. This doesn't start the 28-day clock on its own — the clock resets to the later of the two notice dates. But it gets one step done and means one less thing to deal with the week Nikki lands."
+  },
+  {
+    date: "23 June 2026",
+    label: "Nikki Arrives in the UK",
+    sub: "Entry on fiancé visa",
+    cat: "visa",
+    icon: "🇬🇧",
+    urgent: true,
+    highlight: false,
+    detail: "Day 1: Register with a local E17 GP immediately — this is the gateway to the NHS maternity pathway. Self-refer to Whipps Cross maternity team the same week. Bring full US OB transfer-of-care records including dating scan, blood type, Rh factor, NIPT results, and any consultant notes. Currently chargeable for NHS at 150% rate until IHS is paid."
+  },
+  {
+    date: "23–24 June 2026",
+    label: "Nikki Gives Notice",
+    sub: "Register office — triggers the 28-day clock",
+    cat: "marriage",
+    icon: "📋",
+    urgent: true,
+    highlight: false,
+    detail: "Nikki must give notice in person at the register office — this is the date that starts the mandatory 28 clear days. She will need her passport and fiancé visa documentation. Book the ceremony slot for the earliest available date after the 28 days are up."
+  },
+  {
+    date: "23–30 June 2026",
+    label: "GP Registration + Whipps Cross Referral",
+    sub: "NHS maternity pathway begins",
+    cat: "health",
+    icon: "🏥",
+    urgent: true,
+    highlight: false,
+    detail: "Register with a GP in E17 on arrival. Self-refer to Whipps Cross maternity team via their online form or 24/7 helpline: 020 7767 3348. Request urgent 20-week anomaly scan if not already completed in the US. Due to advanced maternal age, care should be consultant-led rather than midwife-only."
+  },
+  {
+    date: "~22 July 2026",
+    label: "MARRIAGE 💍",
+    sub: "28 clear days after Nikki's notice on 23–24 June",
+    cat: "marriage",
+    icon: "💍",
+    urgent: false,
+    highlight: true,
+    detail: "Earliest legal marriage date. Register office ceremony. Get married as soon as the 28-day window opens — every day of delay is another day of NHS chargeable status. The marriage certificate is required before you can file the FLR(M)."
+  },
+  {
+    date: "23–25 July 2026",
+    label: "File FLR(M) + Pay IHS",
+    sub: "The financial switch — do this the very next working day",
+    cat: "visa",
+    icon: "💳",
+    urgent: true,
+    highlight: false,
+    detail: "Apply for spouse visa (FLR(M)) online at gov.uk immediately after the marriage certificate is in hand. IHS cost: ~£2,587 for 2.5 years at £1,035/yr. From the moment IHS is paid, Nikki is fully exempt from all NHS charges — even before the visa is decided. Consider Super Priority service (~£1,000 extra) for a 24-hour decision. Standard processing is ~8 weeks."
+  },
+  {
+    date: "25 July 2026 onwards",
+    label: "Full NHS Access Confirmed",
+    sub: "IHS payment = exempt from all charges",
+    cat: "health",
+    icon: "✅",
+    urgent: false,
+    highlight: false,
+    detail: "All remaining antenatal care, the birth itself, and postnatal care are free on the NHS from this point. Nikki is treated identically to any UK resident. The £2,587 IHS is the total healthcare cost for the entire maternity journey — versus a potential £10k–20k+ bill if she were still on the fiancé visa at birth."
+  },
+  {
+    date: "July–August 2026",
+    label: "Consultant-Led Antenatal Care",
+    sub: "Approximately weeks 24–30",
+    cat: "health",
+    icon: "👩‍⚕️",
+    urgent: false,
+    highlight: false,
+    detail: "Regular consultant (not just midwife) appointments given high-risk status. Glucose tolerance test for gestational diabetes — particularly important for advanced maternal age. Growth scan at 28 weeks. Uterine artery Doppler screening for pre-eclampsia risk. Blood pressure and urine monitoring at every appointment."
+  },
+  {
+    date: "August–October 2026",
+    label: "Growth Scans + Birth Planning",
+    sub: "Approximately weeks 30–38",
+    cat: "health",
+    icon: "🔬",
+    urgent: false,
+    highlight: false,
+    detail: "Growth scans every 2–4 weeks. GBS (Group B Strep) swab at 35–37 weeks. Anaesthetic pre-assessment — standard for high-risk pregnancies. Documented birth plan agreed with consultant. Hospital tour at Whipps Cross. Kick counting from 28 weeks. Discuss mode of delivery — C-section rates are higher for advanced maternal age."
+  },
+  {
+    date: "~September–October 2026",
+    label: "FLR(M) Decision Expected",
+    sub: "Standard processing: ~8 weeks from application",
+    cat: "visa",
+    icon: "📬",
+    urgent: false,
+    highlight: false,
+    detail: "Spouse visa should be granted well before the birth. Standard processing from late July = decision by late September. NHS coverage is already active from the IHS payment date regardless of when the decision comes. Biometric Residence Permit (BRP) will be issued on approval."
+  },
+  {
+    date: "November 2026",
+    label: "Baby Arrives 🎉",
+    sub: "Consultant-led hospital birth",
+    cat: "health",
+    icon: "👶",
+    urgent: false,
+    highlight: true,
+    detail: "Hospital birth at Whipps Cross (or UCLH if referred for specialist care). Consultant-led delivery due to high-risk status — home birth or midwife-led birth centre not recommended. Full NHS coverage in place via IHS. Neonatal unit on site if needed. The baby is a British national by descent through Nick."
+  }
+];
+
+const catColors = {
+  visa:     "#4f8ef7",
+  marriage: "#c97ef5",
+  health:   "#4caf7d"
+};
+
+const timeline = document.getElementById("timeline");
+
+events.forEach((ev, i) => {
+  const color = catColors[ev.cat];
+
+  const row = document.createElement("div");
+  row.className = "event";
+
+  // Node
+  const nodeCol = document.createElement("div");
+  nodeCol.className = "node-col";
+  const node = document.createElement("div");
+  node.className = "node" + (ev.highlight ? " highlight" : "");
+  node.style.borderColor = color;
+  if (ev.highlight) node.style.boxShadow = `0 0 20px ${color}55`;
+  node.textContent = ev.icon;
+  nodeCol.appendChild(node);
+
+  // Card
+  const card = document.createElement("div");
+  card.className = "card";
+  card.style.borderColor = `#222`;
+  card.style.borderLeftColor = color;
+
+  card.innerHTML = `
+    <div class="card-header">
+      <div class="card-header-left">
+        <div class="date-line" style="color:${color}">
+          ${ev.date}
+          ${ev.urgent ? '<span class="badge-urgent">ACTION REQUIRED</span>' : ''}
+        </div>
+        <div class="card-title${ev.highlight ? ' highlight-text' : ''}" style="${ev.highlight ? `color:${color}` : ''}">${ev.label}</div>
+        <div class="card-sub">${ev.sub}</div>
+      </div>
+      <div class="chevron">
+        <span class="chevron-down">▼</span>
+        <span class="chevron-up">▲</span>
+      </div>
+    </div>
+    <div class="card-detail">${ev.detail}</div>
+  `;
+
+  card.addEventListener("click", () => {
+    const isOpen = card.classList.contains("open");
+    // Close all
+    document.querySelectorAll(".card.open").forEach(c => c.classList.remove("open"));
+    if (!isOpen) {
+      card.classList.add("open");
+      card.style.borderColor = `${color}66`;
+      card.style.boxShadow = `0 4px 20px ${color}22`;
+    } else {
+      card.style.borderColor = "#222";
+      card.style.boxShadow = "none";
+    }
+    // Reset others
+    document.querySelectorAll(".card:not(.open)").forEach(c => {
+      c.style.borderColor = "#222";
+      c.style.borderLeftColor = catColors[events[Array.from(document.querySelectorAll(".card")).indexOf(c)].cat];
+      c.style.boxShadow = "none";
+    });
+    // Keep left border on open card
+    if (card.classList.contains("open")) {
+      card.style.borderLeftColor = color;
+    }
+  });
+
+  row.appendChild(nodeCol);
+  row.appendChild(card);
+  timeline.appendChild(row);
+});
+</script>
+</body>
+</html>
